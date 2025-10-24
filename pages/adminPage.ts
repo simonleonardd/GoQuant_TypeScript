@@ -23,6 +23,7 @@ export class AdminPage {
   }
 
   async fillAccountDetails(accountName: string, key: string, secret: string, passphrase: string): Promise<void> {
+    await this.page.waitForTimeout(5000);
     await this.AddAccountButton.click();
     await this.accountName.fill(accountName);
     await this.OKX_Key.fill(key);

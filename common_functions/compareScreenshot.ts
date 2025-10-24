@@ -39,6 +39,9 @@ export async function compareScreenshot(
   // Take current screenshot
   const currentScreenshot = await element.screenshot({ path: tempPath });
 
+  //Store the screenshot
+  // const storeScreenshot = await element.screenshot({ path : existingPath}); 
+
   // Read existing screenshot
   let existingScreenshot = fs.readFileSync(existingPath);
 

@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }: { page: Page }): Promise<void> => {
 
 
 // Test case: Adding an account with less than minimum account name length
-test('Adding an account with less than minimum account name length', async ({ page }) => {
+test('Adding an account with less than minimum account name length', async ({ page }: { page: Page }): Promise<void> => {
   await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
   await page.goto(admin_URL, { timeout: 6000 });
 
@@ -28,7 +28,7 @@ test('Adding an account with less than minimum account name length', async ({ pa
 });
 
 // Test case: Adding an account with already existing name
-test('Adding an account with already exisiting name', async ({ page }) => {
+test('Adding an account with already exisiting name', async ({ page }: { page: Page }): Promise<void> => {
   await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
   await page.goto(admin_URL, { timeout: 6000 });
 
@@ -41,29 +41,49 @@ test('Adding an account with already exisiting name', async ({ page }) => {
 });
 
 // Test case: Adding a new account
-test('Adding an account with valid API credentials and unique username', async ({ page }) => {
+test('Adding an account with valid API credentials and unique username', async ({ page }: { page: Page }): Promise<void> => {
   await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
   await page.goto(admin_URL, { timeout: 6000 });
   const detailsPage = new AdminPage(page);
   const randomName = await detailsPage.generateRandomAccountName(10);
   await detailsPage.fillAccountDetails(randomName, OKX_Key, OKX_Secret, OKX_Passphrase);
   await page.waitForTimeout(5000);
-  const tbody = page.locator('tbody');
+  const tbody = page.locator(adminLocators.accountTBody);
   await expect(tbody).toContainText(randomName);
 });
 
-test('Delete an account', async({ page }) => {
+// Test case: Adding an account only with account name
+test('Adding an account only with account name', async({ page }: { page: Page }): Promise<void> => {
+  await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
+  await page.goto(admin_URL, { timeout: 6000 });
+  const detailsPage = new AdminPage(page);
+  await detailsPage.fillAccountDetails('MR37V2G91v', '', '', '');
+  const chart = page.locator(adminLocators.demoAccountDialogBox);
+  const diffPixels = await compareScreenshot(chart, 'screenshots/admin_only_accountname.png', { threshold: 1});
+  expect(diffPixels).toBe(0);
+})
+
+// Test case: Deleting an account
+test('Delete an account', async({ page }: { page: Page }): Promise<void> => {
   try {
   await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
   await page.goto(admin_URL, { timeout: 6000 });
-  await page.locator('//button[contains(@data-testid,"delete-account-tfwebkrrdk")]').click();
-  await page.locator('input[placeholder="DELETE"]').pressSequentially('DELETE');
-  await page.locator('//span[contains(text(), "Delete")]').click();
-  const tbody = page.locator('tbody');
+  await page.locator(adminLocators.deleteButton).click();
+  await page.locator(adminLocators.deleteConfirmationTextbox).pressSequentially('DELETE');
+  await page.locator(adminLocators.deletePopupButton).click();
+  const tbody = page.locator(adminLocators.accountTBody);
   await expect(tbody).not.toContainText('tfwebkrrdk');
 } finally {
   const detailsPage = new AdminPage(page)
   await detailsPage.fillAccountDetails('tfwebkrrdk', OKX_Key, OKX_Secret, OKX_Passphrase);
   await page.waitForTimeout(10000);
 }
+});
+
+// Test case: Modifying an account name
+test('Modifying an account name', async({page}: { page: Page }): Promise<void> =>{
+  await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
+  await page.goto(admin_URL, { timeout: 6000 });
+  await page.locator('//button[@data-testid="delete-account-f2sphzxrbr"]/preceding-sibling::button[contains(text(), "Modify")]').click();
+
 });
