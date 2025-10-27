@@ -81,6 +81,7 @@ test('Delete an account', async({ page }: { page: Page }): Promise<void> => {
 });
 
 // Test case: Modifying an account name
+// Not yet completed
 test('Modifying an account name', async({page}: { page: Page }): Promise<void> =>{
   await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
   await page.goto(admin_URL, { timeout: 6000 });
