@@ -306,3 +306,95 @@ test.describe('GoTrade Parameterized Order Tests for SELL operation in Binance U
     });
   }
 });
+
+test('Placing a trade with empty values', async({ page }: { page: Page }): Promise<void> => {
+  await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
+  await handleWelcomePopup(page);
+  await page.locator(gotradeLocators.tradeButton).click();
+
+  const quantityWarning = page.locator('//p[contains(text(), "Quantity must be greater than 0")]');
+  expect(quantityWarning).toContainText("Quantity must be greater than 0");
+  const durationWarning = page.locator('//p[contains(text(), "Duration must be greater than 0")]');
+  expect(durationWarning).toContainText("Duration must be greater than 0");
+
+});
+
+test('Showing execution profile', async({ page }: { page: Page }): Promise<void> => {
+  await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
+  await handleWelcomePopup(page);
+
+  await page.locator(gotradeLocators.quantityInput).fill('1');
+  await page.locator(gotradeLocators.durationInput).fill('10');
+  await page.waitForTimeout(5000);
+  await page.locator('#showExecutionChart').click();
+  await page.waitForTimeout(3000);
+
+
+  const chart = page.locator(gotradeLocators.executionProfileChart);
+  expect(chart).toContainText('Market Edge - Order Execution Profile');
+  const diffPixels = await compareScreenshot(chart, 'screenshots/gotrade_ExecutionProfile.png', { threshold: 1 , resizeExisting:false});
+  expect(diffPixels).toBe(0);
+
+});
+
+test('Displaying chart', async({ page }: { page: Page }): Promise<void> => {
+  await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
+  await handleWelcomePopup(page);
+
+  await page.locator(gotradeLocators.chart).click();
+  const chartCanvas = page.locator('//canvas[contains(@data-zr-dom-id,"zr_0")]');
+
+  const diffPixels = await compareScreenshot(chartCanvas, 'screenshots/gotrade_Chart.png', { threshold: 1 , resizeExisting:false});
+  expect(diffPixels).toBe(0);
+
+});
+
+test('Cancelling working orders', async({ page }: { page: Page }): Promise<void> => {
+  await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
+  await handleWelcomePopup(page);
+
+  const cancelButton = page.locator(gotradeLocators.cancelWorkingOrders);
+  await cancelButton.scrollIntoViewIfNeeded();
+  await cancelButton.click();
+
+  await page.locator(gotradeLocators.cancelConfirmation).click();
+  const divsInsideTbody = page.locator('tbody[class*="border-0"] div.group.contents');
+  const divCount = await divsInsideTbody.count();
+
+  if (divCount > 0) {
+    console.log(`✅ Div elements found inside tbody: ${divCount}`);
+  } else {
+    console.log('❌ No div elements found inside tbody');
+  }
+  expect(divCount).toBe(0);
+});
+
+test('Kill-Edge', async({ page }: { page: Page }): Promise<void> => {
+  await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
+  await handleWelcomePopup(page);
+
+  const cancelButton = page.locator(gotradeLocators.killEdgeButton);
+  await cancelButton.scrollIntoViewIfNeeded();
+  await cancelButton.click();
+
+  await page.locator(gotradeLocators.cancelConfirmation).click();
+  await page.locator(gotradeLocators.openPositionButton).click();
+  await page.locator(gotradeLocators.killEdgeButton).click();
+  await expect(page.locator('td')).toHaveText('No Results');
+
+});
+
+test('Liqudate Positions', async({ page }: { page: Page }): Promise<void> => {
+  await expect(page).toHaveURL(gotrade_URL, { timeout: 5000 });
+  await handleWelcomePopup(page);
+
+  const cancelButton = page.locator(gotradeLocators.liquidatePositions);
+  await cancelButton.scrollIntoViewIfNeeded();
+  await cancelButton.click();
+
+  await page.locator(gotradeLocators.cancelConfirmation).click();
+  await page.locator(gotradeLocators.openPositionButton).click();
+  await page.locator(gotradeLocators.killEdgeButton).click();
+  await expect(page.locator('td')).toHaveText('No Results');
+
+});

@@ -30,6 +30,13 @@ export const gotradeLocators: {
     secondSymbolDropDown : string;
     firstSymbolSelection : string;
     secondSymbolSelection : string;
+    chart : string;
+    cancelWorkingOrders: string;
+    cancelConfirmation: string;
+    killEdgeButton : string;
+    openPositionButton : string;
+    liquidatePositions : string;
+    executionProfileChart : string;
 }={
     onBoardingCard : '//div[contains(@data-testid,"onboarding-card")]',
     onBoardingCardProceedSymbol : '//span[contains(text(),"→")]',
@@ -64,4 +71,12 @@ export const gotradeLocators: {
     secondSymbolDropDown : '//label[contains(normalize-space(.),"Second Symbol")]/following::div[@id="spotSymbolsDropdown"][1]',
     firstSymbolSelection : '//div[contains(@data-value,"btcusd_perp")]',
     secondSymbolSelection : '//div[contains(@data-value,"ethusd_perp")]',
+
+    chart : '//button[contains(text(),"Chart")]',
+    cancelWorkingOrders: '//button[contains(text(),"Cancel Working Orders")]',
+    cancelConfirmation: '//button[contains(text(),"Confirm")]',
+    killEdgeButton : '//button[contains(text(),"Kill-Edge")]',
+    openPositionButton : '//button[contains(text(),"Open Positions")]',
+    liquidatePositions : '//button[contains(text(),"Liquidate Positions")]',
+    executionProfileChart : '//div[contains(@class,"col-span-2") and contains(@class,"mt-4")]',
 }
