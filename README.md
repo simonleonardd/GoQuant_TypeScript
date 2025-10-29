@@ -1,4 +1,5 @@
 This repository contains automated testing of GoTrade platform of GoQuant.
+
 The detailed report is under "**Reports/GoQuant Report**"
 
 -------------------------------------------------------------------------
@@ -10,20 +11,28 @@ In Order to run this automated scripts follow the below instructions:
 4.  After installation, In Command pallete Install playwright
 -------------------------------------------------------------------------
 
-To execute playwright test
-// To execute all tests
+To execute playwright test:
+
+// To execute all tests  
 1. npx playwright test
+
 // To execute particular test
-npx playwright test <testname>.spec.ts
+
+2. npx playwright test <testname>.spec.ts
+
 // To execute particular test and view visually
-npx playwright test <testname>.spec.ts --headed
+
+3. npx playwright test <testname>.spec.ts --headed
+
 // To execute a particular test case in the test
-npx playwright test <testname>.spec.ts -g "test case name"
+
+4. npx playwright test <testname>.spec.ts -g "test case name"
 -------------------------------------------------------------------------
 
 The repository structure
 
 DataSet Folder:
+
 1.gotrade_Dataset.ts - Contains the values for the trade. eg , quantity,threshold,duration
 
 Constants Folder:
@@ -51,6 +60,6 @@ screenshots:
 Contains screenshot of testcases
 
 tests:
+
 Contains all the test classes
-6.
  
